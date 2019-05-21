@@ -35,6 +35,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 				.secret("{noop}mysecret")
 				.authorizedGrantTypes("client_credentials")
 				.scopes("resource-server-read", "resource-server-write")
+				.accessTokenValiditySeconds(300)
 				.resourceIds(SERVER_RESOURCE_ID)
 
 				.and()
