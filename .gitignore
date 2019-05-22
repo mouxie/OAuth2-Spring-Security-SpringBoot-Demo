@@ -24,3 +24,4 @@ hs_err_pid*
 
 /boot-oauth2-authorization/target
 /boot-oauth2-resource/target
+/boot-oauth2-client-application/target
