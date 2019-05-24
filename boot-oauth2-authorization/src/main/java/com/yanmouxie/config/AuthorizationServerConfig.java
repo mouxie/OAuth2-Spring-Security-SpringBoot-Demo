@@ -2,6 +2,7 @@ package com.yanmouxie.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
@@ -14,7 +15,8 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 @EnableAuthorizationServer
 public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
 
-	private static final String SERVER_RESOURCE_ID = "oauth2-server";
+	@Value("#{ @environment['my.oauth2.resource.resourceId'] }")
+	private String serverResourceID;
 
 	@Autowired
 	@Qualifier("authenticationManagerBean")
@@ -36,15 +38,15 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 				.authorizedGrantTypes("client_credentials")
 				.scopes("resource-server-read", "resource-server-write")
 				.accessTokenValiditySeconds(300)
-				.resourceIds(SERVER_RESOURCE_ID)
+				.resourceIds(serverResourceID)
 
 				.and()
 				.withClient("ResourceServer")
-				.secret("{noop}Password1")
+				.secret("{noop}ResourceServerSecret")
 				.authorizedGrantTypes("authorization_code", "implicit",
 						"password", "client_credentials", "refresh_token")
 				.authorities("ROLE_TRUSTED_CLIENT")
-				.resourceIds(SERVER_RESOURCE_ID);
+				.resourceIds(serverResourceID);
 	}
 
 	@Override
