@@ -12,7 +12,7 @@ import org.springframework.security.oauth2.provider.token.RemoteTokenServices;
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
 	private static final String SERVER_RESOURCE_ID = "oauth2-server";
-	private static final String URL = "http://localhost:8080/oauth/check_token";
+	private static final String URL = "http://localhost:8980/my-oauth2/oauth/check_token";
 
 	@Override
 	public void configure(ResourceServerSecurityConfigurer resources)
@@ -21,7 +21,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 		RemoteTokenServices tokenService = new RemoteTokenServices();
 		tokenService.setCheckTokenEndpointUrl(URL);
 		tokenService.setClientId("ResourceServer");
-		tokenService.setClientSecret("Password1");
+		tokenService.setClientSecret("ResourceServerSecret");
 		resources.tokenServices(tokenService);
 	}
 
