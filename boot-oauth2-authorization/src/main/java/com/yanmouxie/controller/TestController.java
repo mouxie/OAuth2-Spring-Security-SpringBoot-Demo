@@ -16,10 +16,10 @@ public class TestController {
 	private AuthorizationServerEndpointsConfiguration endpoints;
 
 	@RequestMapping("/getAccessTokenByClientId")
-	public Collection<OAuth2AccessToken> test() {
+	public Collection<OAuth2AccessToken> getAccessTokenByClientId(String client_id) {
 		InMemoryTokenStore tokenStore = (InMemoryTokenStore) endpoints.getEndpointsConfigurer().getTokenStore();
 		
-		Collection<OAuth2AccessToken> tokens = tokenStore.findTokensByClientId("ResourceServer");
+		Collection<OAuth2AccessToken> tokens = tokenStore.findTokensByClientId(client_id);
 		
 		if (tokens != null && tokens.size() > 0) {
 			for (OAuth2AccessToken accessToken : tokens) {
