@@ -29,4 +29,6 @@ public class TestController {
 
 		return tokens;
 	}
+	
+	//http://127.0.0.1:8080/getAccessTokenByClientId?client_id=myclient
 }
