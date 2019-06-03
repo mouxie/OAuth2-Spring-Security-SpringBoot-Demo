@@ -90,7 +90,12 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 		JwtAccessTokenConverter converter = new CustomTokenEnhancer();
 		converter.setKeyPair(
 				new KeyStoreKeyFactory(new ClassPathResource("jwt.jks"), "mypass".toCharArray()).getKeyPair("mytest"));
-		//converter.setSigningKey("123");
+		// http://localhost:8080/oauth/token_key
+		// { "alg": "SHA256withRSA", "value": "-----BEGIN PUBLIC KEY ...... " }
+		
+		//converter.setSigningKey("123"); 
+		// http://localhost:8080/oauth/token_key
+		// { "alg": "HMACSHA256","value": "123"}
 		return converter;
 	}
 }
