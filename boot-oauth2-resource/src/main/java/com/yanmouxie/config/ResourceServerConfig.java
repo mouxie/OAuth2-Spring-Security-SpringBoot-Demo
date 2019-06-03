@@ -1,7 +1,10 @@
 package com.yanmouxie.config;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-
+import java.io.InputStreamReader;
+import java.util.stream.Collectors;
+import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +20,10 @@ import org.springframework.security.oauth2.provider.token.RemoteTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
+import org.springframework.web.client.RestTemplate;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 @Configuration
 @EnableResourceServer
@@ -67,7 +74,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     public JwtAccessTokenConverter accessTokenConverter() {
         JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
         //converter.setSigningKey("123"); // use same key as Authorization server
-        
+        /*
         Resource resource = new ClassPathResource("pubkey.txt");
         String publicKey = null;
         try {
@@ -76,6 +83,30 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
             throw new RuntimeException(e);
         }
         converter.setVerifierKey(publicKey);
+        */
+        
+        converter.setVerifierKey(getPubKey());
         return converter;
+    }
+    
+    private String getPubKey() {
+        Resource resource = new ClassPathResource("pubkey.txt");
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
+            return br.lines().collect(Collectors.joining("\n"));
+        } catch (IOException ioe) {
+            return getKeyFromAuthorizationServer();
+        }
+    }
+    
+    private String getKeyFromAuthorizationServer() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String pubKey = new RestTemplate().getForObject("http://localhost:8080/oauth/token_key", String.class);
+        try {
+            Map map = objectMapper.readValue(pubKey, Map.class);
+            return map.get("value").toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
